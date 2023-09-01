@@ -18,6 +18,7 @@ const Login = () => {
   };
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<Authentication>(intialState);
+  const [error, setError] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -41,9 +42,13 @@ const Login = () => {
         navigate("/");
       })
       .catch((error) => {
+        setError(true);
         setIsLoading(false);
         const errorMsg = error.message;
         console.log(errorMsg);
+        setTimeout(() => {
+          setError(false);
+        }, 1000);
       });
   };
   return (
@@ -78,7 +83,9 @@ const Login = () => {
           </div>
           <Button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-400 mt-5 p-5"
+            className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
+              error && "shake"
+            }`}
           >
             {isLoading && <BtnLoader />}Login
           </Button>
