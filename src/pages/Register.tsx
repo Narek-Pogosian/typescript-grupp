@@ -1,23 +1,27 @@
 import { ChangeEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  AuthError,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "@/firebase";
-import { Authentication } from "@/types";
-import { v4 as uuidv4 } from "uuid";
 import BtnLoader from "@/utils/Loader/BtnLoader";
 import { Link, useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Register = () => {
-  const intialState: Authentication = {
-    id: uuidv4(),
-    name: "",
+  const intialState = {
     userName: "",
     email: "",
     password: "",
+    Cpassword: "",
   };
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<Authentication>(intialState);
+  const [formData, setFormData] = useState(intialState);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -32,23 +36,38 @@ const Register = () => {
 
   const handleNewUser = (e: React.FormEvent) => {
     e.preventDefault();
-    const { email, password, name } = formData;
-    setIsLoading(true);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        updateProfile(user, { displayName: name });
-        setIsLoading(false);
-        navigate("/login");
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        const errorMsg = error.message;
-        console.log(errorMsg);
-      });
+
+    const { email, password, userName, Cpassword } = formData;
+
+    if (!email || !password || !userName || !Cpassword) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (Cpassword !== password) {
+      setError("Passwords dont match");
+      return;
+    } else {
+      setIsLoading(true);
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          updateProfile(user, { displayName: userName }).then(() => {
+            navigate("/login");
+          });
+        })
+        .catch((error: AuthError) => {
+          setError(error.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
+
   return (
-    <section className="w-screen h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
+    <section className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
       <div className="w-[27rem] mx-auto flex flex-col gap-10 pt-20">
         <form
           className="flex flex-col gap-2 p-10 bg-white rounded opacity"
@@ -61,7 +80,7 @@ const Register = () => {
               type="name"
               name="name"
               id="name"
-              value={formData.name}
+              value={formData.userName}
               onChange={handleChange}
               className="p-[1.3rem] border-slate-200"
             />
@@ -94,9 +113,16 @@ const Register = () => {
               type="password"
               name="Cpassword"
               id="Cpassword"
+              onChange={handleChange}
+              value={formData.Cpassword}
               className="p-[1.3rem] border-slate-200"
             />
           </div>
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <Button
             type="submit"
             className="bg-blue-500 hover:bg-blue-400 mt-5 p-5"
@@ -106,7 +132,7 @@ const Register = () => {
           </Button>
           <p className="mt-10 text-gray-400 text-center">
             Already a member?{" "}
-            <Link to="/login" className="underline">
+            <Link to="/login" className="underline text-indigo-500">
               Sign in
             </Link>
           </p>
