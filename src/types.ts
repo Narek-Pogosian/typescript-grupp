@@ -1,18 +1,12 @@
 export interface User {
   id: string;
-  name: string;
   userName: string;
-}
-
-export interface Authentication extends User {
-  email: string;
-  password: string;
 }
 
 export type ThreadCategory = "THREAD" | "QNA";
 
 export interface Thread {
-  id: number;
+  id: string;
   title: string;
   category: ThreadCategory;
   creationDate: string;
@@ -27,7 +21,7 @@ export interface QNAThread extends Thread {
 }
 
 export interface Comment {
-  id: number;
+  id: string;
   thread: number;
   content: string;
   creator: User;

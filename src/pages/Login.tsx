@@ -1,26 +1,27 @@
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { auth } from "@/firebase";
-import { Authentication } from "@/types";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import BtnLoader from "@/utils/Loader/BtnLoader";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { AuthError, signInWithEmailAndPassword } from "firebase/auth";
 import React, { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 
 const Login = () => {
-  const intialState: Authentication = {
-    id: uuidv4(),
-    name: "",
+  const intialState = {
     userName: "",
     email: "",
     password: "",
   };
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<Authentication>(intialState);
-  const [error, setError] = useState<boolean>(false);
+  const [formData, setFormData] = useState(intialState);
+  const [error, setError] = useState<string | null>(null);
+
 
   const navigate = useNavigate();
+  const { setUser } = useAuthContext();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((data) => {
@@ -33,26 +34,39 @@ const Login = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+
     const { email, password } = formData;
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        userCredential.user;
-        setIsLoading(false);
+        const user = userCredential.user;
+
+        // ! We set a displayName at registration, usually it will work but it can fail thats why it can be null.
+        setUser({ id: user.uid, userName: user.displayName! });
+
         navigate("/");
       })
-      .catch((error) => {
-        setError(true);
-        setIsLoading(false);
-        const errorMsg = error.message;
-        console.log(errorMsg);
-        setTimeout(() => {
+      .catch((error: AuthError) => {
+          
+        setError(error.message);
+          setTimeout(() => {
           setError(false);
-        }, 1000);
+        }, 2000);
+          
+      })
+      .finally(() => {
+        setIsLoading(false);
+
       });
   };
+
   return (
-    <section className="w-screen h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
+    <section className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
       <div className="w-[27rem] mx-auto flex flex-col gap-10 pt-20">
         <form
           className="flex flex-col gap-2 p-10 bg-white rounded"
@@ -81,6 +95,11 @@ const Login = () => {
               className="p-[1.3rem] border-slate-200"
             />
           </div>
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <Button
             type="submit"
             className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
@@ -91,7 +110,7 @@ const Login = () => {
           </Button>
           <p className="mt-10 text-gray-400 text-center">
             Not a member?{" "}
-            <Link to="/register" className="underline">
+            <Link to="/register" className="underline text-indigo-500">
               Sign up
             </Link>{" "}
             now
