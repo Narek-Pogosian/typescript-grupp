@@ -23,6 +23,7 @@ const Register = () => {
   const [formData, setFormData] = useState(intialState);
   const [error, setError] = useState<string | null>(null);
 
+
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -62,8 +63,12 @@ const Register = () => {
         })
         .finally(() => {
           setIsLoading(false);
+        setTimeout(() => {
+          setError(false);
+        }, 2000);
         });
     }
+
   };
 
   return (
@@ -125,7 +130,9 @@ const Register = () => {
           )}
           <Button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-400 mt-5 p-5"
+            className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
+              error && "shake"
+            }`}
           >
             {isLoading && <BtnLoader />}
             Register

@@ -19,6 +19,7 @@ const Login = () => {
   const [formData, setFormData] = useState(intialState);
   const [error, setError] = useState<string | null>(null);
 
+
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
 
@@ -51,10 +52,16 @@ const Login = () => {
         navigate("/");
       })
       .catch((error: AuthError) => {
+          
         setError(error.message);
+          setTimeout(() => {
+          setError(false);
+        }, 2000);
+          
       })
       .finally(() => {
         setIsLoading(false);
+
       });
   };
 
@@ -95,7 +102,9 @@ const Login = () => {
           )}
           <Button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-400 mt-5 p-5"
+            className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
+              error && "shake"
+            }`}
           >
             {isLoading && <BtnLoader />}Login
           </Button>
