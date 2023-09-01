@@ -23,7 +23,6 @@ const Register = () => {
   const [formData, setFormData] = useState(intialState);
   const [error, setError] = useState<string | null>(null);
 
-
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,22 +62,21 @@ const Register = () => {
         })
         .finally(() => {
           setIsLoading(false);
-        setTimeout(() => {
-          setError(false);
-        }, 2000);
+          setTimeout(() => {
+            setError(null);
+          }, 2000);
         });
     }
-
   };
 
   return (
-    <section className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
+    <section className="min-h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
       <div className="w-[27rem] mx-auto flex flex-col gap-10 pt-20">
         <form
           className="flex flex-col gap-2 p-10 bg-white rounded opacity"
           onSubmit={handleNewUser}
         >
-          <h1 className="text-3xl text-center py-10 font-bold">Sign Up</h1>
+          <h1 className="py-10 text-3xl font-bold text-center">Sign Up</h1>
           <div className="flex flex-col gap-2">
             <label htmlFor="name">Username</label>
             <Input
@@ -137,9 +135,9 @@ const Register = () => {
             {isLoading && <BtnLoader />}
             Register
           </Button>
-          <p className="mt-10 text-gray-400 text-center">
+          <p className="mt-10 text-center text-gray-400">
             Already a member?{" "}
-            <Link to="/login" className="underline text-indigo-500">
+            <Link to="/login" className="text-indigo-500 underline">
               Sign in
             </Link>
           </p>

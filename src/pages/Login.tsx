@@ -19,7 +19,6 @@ const Login = () => {
   const [formData, setFormData] = useState(intialState);
   const [error, setError] = useState<string | null>(null);
 
-
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
 
@@ -52,27 +51,24 @@ const Login = () => {
         navigate("/");
       })
       .catch((error: AuthError) => {
-          
         setError(error.message);
-          setTimeout(() => {
-          setError(false);
+        setTimeout(() => {
+          setError(null);
         }, 2000);
-          
       })
       .finally(() => {
         setIsLoading(false);
-
       });
   };
 
   return (
-    <section className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
+    <section className="min-h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-300">
       <div className="w-[27rem] mx-auto flex flex-col gap-10 pt-20">
         <form
           className="flex flex-col gap-2 p-10 bg-white rounded"
           onSubmit={handleLogin}
         >
-          <h1 className="text-3xl text-center py-10 font-bold">Sign In</h1>
+          <h1 className="py-10 text-3xl font-bold text-center">Sign In</h1>
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
             <Input
@@ -108,9 +104,9 @@ const Login = () => {
           >
             {isLoading && <BtnLoader />}Login
           </Button>
-          <p className="mt-10 text-gray-400 text-center">
+          <p className="mt-10 text-center text-gray-400">
             Not a member?{" "}
-            <Link to="/register" className="underline text-indigo-500">
+            <Link to="/register" className="text-indigo-500 underline">
               Sign up
             </Link>{" "}
             now
