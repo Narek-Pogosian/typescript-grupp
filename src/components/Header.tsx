@@ -18,7 +18,7 @@ const Header = () => {
   };
   return (
     <>
-      <header className="h-[4rem] bg-purple-950">
+      <header className="h-[3rem] bg-purple-950">
         <div className="w-[80%] h-full mx-auto flex justify-between items-center">
           <NavLink
             to="/"
