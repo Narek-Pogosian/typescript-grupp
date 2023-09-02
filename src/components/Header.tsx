@@ -1,7 +1,7 @@
 import { auth } from "@/firebase";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { signOut } from "firebase/auth";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
   const { user, setUser } = useAuthContext();
@@ -16,13 +16,14 @@ const Header = () => {
         console.log(error.message);
       });
   };
+
   return (
     <>
-      <header className="h-[3rem] bg-purple-950">
-        <div className="w-[80%] h-full mx-auto flex justify-between items-center">
+      <header className="h-[3rem] fixed top-0 left-0 w-full bg-purple-950">
+        <div className="container flex items-center justify-between h-full">
           <NavLink
             to="/"
-            className="text-white uppercase font-semibold text-xl"
+            className="text-xl font-semibold text-white uppercase"
           >
             threads
           </NavLink>
@@ -49,7 +50,6 @@ const Header = () => {
           </nav>
         </div>
       </header>
-      <Outlet />
     </>
   );
 };

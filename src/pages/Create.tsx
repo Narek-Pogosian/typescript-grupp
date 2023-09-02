@@ -105,69 +105,64 @@ const Create = () => {
   };
 
   return (
-    <section className="min-h-[calc(100vh-3rem)] bg-purple-500">
-      <div className="w-[35rem] mx-auto flex flex-col gap-5">
-        <form
-          className="flex flex-col gap-5 p-10 mt-24 bg-white rounded"
-          onSubmit={handleNewPost}
+    <section className="max-w-[40rem] px-6 pt-8 pb-14 rounded border mx-auto flex flex-col gap-5">
+      <form className="flex flex-col gap-5" onSubmit={handleNewPost}>
+        <h1 className="text-3xl font-semibold text-center">New Thread</h1>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="title">Title</label>
+          <Input
+            type="text"
+            name="title"
+            id="title"
+            onChange={handleChange}
+            value={formData.title}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="description">Description</label>
+          <Textarea
+            name="description"
+            id="description"
+            rows={8}
+            className="resize-none "
+            onChange={handleChange}
+            value={formData.description}
+          />
+        </div>
+        <Select
+          onValueChange={(value: ThreadCategory) =>
+            setFormData((data) => ({ ...data, category: value }))
+          }
+          defaultValue={formData.category}
         >
-          <h1 className="text-3xl font-semibold text-center">New Thread</h1>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="title">Title</label>
-            <Input
-              type="text"
-              name="title"
-              id="title"
-              onChange={handleChange}
-              value={formData.title}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="description">Description</label>
-            <Textarea
-              name="description"
-              id="description"
-              rows={8}
-              className="resize-none "
-              onChange={handleChange}
-              value={formData.description}
-            />
-          </div>
-          <Select
-            onValueChange={(value: ThreadCategory) =>
-              setFormData((data) => ({ ...data, category: value }))
-            }
-            defaultValue={formData.category}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Category</SelectLabel>
-                <SelectItem id="THREAD" value="THREAD">
-                  Thread
-                </SelectItem>
-                <SelectItem id="QNA" value="QNA">
-                  QnA
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <Button
-            className={`text-md bg-blue-500 hover:bg-blue-400 p-5 ${
-              error && "shake"
-            }`}
-          >
-            Post
-          </Button>
-        </form>
-      </div>
+          <SelectTrigger>
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Category</SelectLabel>
+              <SelectItem id="THREAD" value="THREAD">
+                Thread
+              </SelectItem>
+              <SelectItem id="QNA" value="QNA">
+                QnA
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <Button
+          className={`text-md bg-blue-500 hover:bg-blue-400 p-5 ${
+            error && "shake"
+          }`}
+        >
+          Post
+        </Button>
+      </form>
     </section>
   );
 };

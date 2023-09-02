@@ -3,7 +3,7 @@ import { ReactNode, createContext, useState } from "react";
 
 type AuthContextType = {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
 };
 
 const intialState: AuthContextType = {
