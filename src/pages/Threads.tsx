@@ -29,9 +29,9 @@ const Threads = () => {
   return (
     <div>
       <h1>Threads</h1>
-      {user ? user.userName : "No user"}
+      {user ? <span>{user.userName}</span> : "No user"}
       <nav className="flex gap-6">
-        <Link to="/register">Register</Link>
+        {!user && <Link to="/register">Register</Link>}
         {!user ? (
           <Link to="/login">Login</Link>
         ) : (

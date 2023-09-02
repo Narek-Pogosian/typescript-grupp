@@ -78,11 +78,11 @@ const Register = () => {
         >
           <h1 className="py-10 text-3xl font-bold text-center">Sign Up</h1>
           <div className="flex flex-col gap-2">
-            <label htmlFor="name">Username</label>
+            <label htmlFor="userName">Username</label>
             <Input
-              type="name"
-              name="name"
-              id="name"
+              type="userName"
+              name="userName"
+              id="userName"
               value={formData.userName}
               onChange={handleChange}
               className="p-[1.3rem] border-slate-200"
