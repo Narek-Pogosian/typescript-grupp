@@ -105,7 +105,7 @@ const Create = () => {
   };
 
   return (
-    <section className="min-h-[calc(100vh-3rem)] bg-purple-400">
+    <section className="min-h-[calc(100vh-3rem)] bg-purple-500">
       <div className="w-[35rem] mx-auto flex flex-col gap-5">
         <form
           className="flex flex-col gap-5 p-10 mt-24 bg-white rounded"
