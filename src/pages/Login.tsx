@@ -45,7 +45,7 @@ const Login = () => {
       .then((userCredential) => {
         const user = userCredential.user;
 
-        // ! We set a displayName at registration, usually it will work but it can fail thats why it can be null.
+        // * We set a displayName at registration, usually it will work but it can fail thats why it can be null.
         setUser({ id: user.uid, userName: user.displayName! });
         localStorage.setItem(
           "userData",
@@ -104,7 +104,7 @@ const Login = () => {
             type="submit"
             disabled={isLoading}
             className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
-              error && "shake" 
+              error && "shake"
             }`}
           >
             {isLoading && <BtnLoader />}Login

@@ -11,105 +11,104 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Thread, ThreadCategory } from "@/types";
-import { addDoc, collection } from "firebase/firestore";
+import { QNAThread, Thread, ThreadCategory } from "@/types";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+
+type FormStateType = Pick<Thread, "title" | "category" | "description">;
+
+const initialState: FormStateType = {
+  title: "",
+  category: "THREAD",
+  description: "",
+};
 
 const Create = () => {
   const { user } = useAuthContext();
-  const initialState: Thread = {
-    id: "",
-    title: "",
-    category: "THREAD" || "QNA",
-    creationDate: "",
-    description: "",
-    creator: {
-      id: "",
-      userName: "",
-    },
-  };
-  const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState(initialState);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState(initialState);
 
-  const handleNewPost = (e: React.FormEvent) => {
+  const handleNewPost = async (e: React.FormEvent) => {
     e.preventDefault();
     const { title, category, description } = formData;
+
+    if (!user) {
+      setError("Unauthorized");
+      return;
+    }
 
     if (!title || !category || !description) {
       setError("Please fill in all fields");
       return;
     }
+
     if (title.length < 3) {
       setError("Title cannot be less than 3 characters");
       return;
     }
+
     try {
+      const currentDate = new Date().toLocaleDateString();
+      const id = crypto.randomUUID();
+
       if (category === "QNA") {
-        addDoc(collection(db, "threads"), {
+        const newThread: QNAThread = {
+          id,
           title,
           category,
           description,
           creator: {
-            id: user?.id,
-            userName: user?.userName,
+            id: user.id,
+            userName: user.userName,
           },
+          creationDate: currentDate,
           isAnswered: false,
-        });
+        };
+
+        await setDoc(doc(db, "threads", id), newThread);
       } else {
-        addDoc(collection(db, "threads"), {
+        const newThread: Thread = {
+          id,
           title,
           category,
           description,
           creator: {
-            id: user?.id,
-            userName: user?.userName,
+            id: user.id,
+            userName: user.userName,
           },
-        });
+          creationDate: currentDate,
+        };
+
+        await setDoc(doc(db, "threads", id), newThread);
       }
-      setFormData(initialState);
+
       navigate("/");
     } catch (error) {
-      console.error(error);
       setError("Failed to add post, try again later");
     }
   };
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    if (e.target.id === "category") {
-      setFormData((data) => {
-        return {
-          ...data,
-          category: e.target.value as ThreadCategory,
-        };
-      });
-    } else {
-      setFormData((data) => {
-        return {
-          ...data,
-          [e.target.id]: e.target.value,
-        };
-      });
-    }
+    setFormData((data) => {
+      return {
+        ...data,
+        [e.target.id]: e.target.value,
+      };
+    });
   };
-  console.log(formData);
 
   return (
     <section className="min-h-full bg-purple-400">
       <div className="w-[35rem] mx-auto flex flex-col gap-5">
         <form
-          className="flex flex-col gap-5 bg-white p-10 rounded mt-24"
+          className="flex flex-col gap-5 p-10 mt-24 bg-white rounded"
           onSubmit={handleNewPost}
         >
           <h1 className="text-3xl font-semibold text-center">New Thread</h1>
@@ -128,35 +127,33 @@ const Create = () => {
             <Textarea
               name="description"
               id="description"
-              rows={13}
-              className=" resize-none"
+              rows={8}
+              className="resize-none "
               onChange={handleChange}
               value={formData.description}
             />
           </div>
-          <div className="">
-            <Select
-              onValueChange={(value) =>
-                setFormData((data) => ({ ...data, category: value }))
-              }
-              defaultValue={formData.category}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Category</SelectLabel>
-                  <SelectItem id="THREAD" value="THREAD">
-                    Thread
-                  </SelectItem>
-                  <SelectItem id="QNA" value="QNA">
-                    QnA
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            onValueChange={(value: ThreadCategory) =>
+              setFormData((data) => ({ ...data, category: value }))
+            }
+            defaultValue={formData.category}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Category</SelectLabel>
+                <SelectItem id="THREAD" value="THREAD">
+                  Thread
+                </SelectItem>
+                <SelectItem id="QNA" value="QNA">
+                  QnA
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
