@@ -12,7 +12,7 @@ const Threads = () => {
       const userData = JSON.parse(user);
       setUser(userData);
     }
-  });
+  }, []);
 
   const signOutUser = () => {
     signOut(auth)

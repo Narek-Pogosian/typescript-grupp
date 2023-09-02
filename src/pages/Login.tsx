@@ -102,8 +102,9 @@ const Login = () => {
           )}
           <Button
             type="submit"
+            disabled={isLoading}
             className={`bg-blue-500 hover:bg-blue-400 mt-5 p-5 ${
-              error && "shake"
+              error && "shake" 
             }`}
           >
             {isLoading && <BtnLoader />}Login

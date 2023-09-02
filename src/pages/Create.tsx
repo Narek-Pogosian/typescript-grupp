@@ -10,43 +10,100 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@radix-ui/react-select";
+} from "@/components/ui/select";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Thread, ThreadCategory } from "@/types";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/firebase";
 
 const Create = () => {
   const { user } = useAuthContext();
-  const initialState = {
+  const initialState: Thread = {
+    id: "",
     title: "",
-    category: "",
+    category: "THREAD" || "QNA",
     creationDate: "",
     description: "",
-    creator: user?.userName,
+    creator: {
+      id: "",
+      userName: "",
+    },
   };
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState(initialState);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/login");
+  //   }
+  // }, [user, navigate]);
+
+  const handleNewPost = (e: React.FormEvent) => {
+    e.preventDefault();
+    const { title, category, description } = formData;
+
+    if (!title || !category || !description) {
+      setError("Please fill in all fields");
       return;
     }
-  }, [user, navigate]);
-
-  const handleNewPost = (e) => {
-    e.preventDefault();
+    if (title.length < 3) {
+      setError("Title cannot be less than 3 characters");
+      return;
+    }
+    try {
+      if (category === "QNA") {
+        addDoc(collection(db, "threads"), {
+          title,
+          category,
+          description,
+          creator: {
+            id: user?.id,
+            userName: user?.userName,
+          },
+          isAnswered: false,
+        });
+      } else {
+        addDoc(collection(db, "threads"), {
+          title,
+          category,
+          description,
+          creator: {
+            id: user?.id,
+            userName: user?.userName,
+          },
+        });
+      }
+      setFormData(initialState);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setError("Failed to add post, try again later");
+    }
   };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    setFormData((data) => {
-      return {
-        ...data,
-        [e.target.name]: e.target.value,
-      };
-    });
+    if (e.target.id === "category") {
+      setFormData((data) => {
+        return {
+          ...data,
+          category: e.target.value as ThreadCategory,
+        };
+      });
+    } else {
+      setFormData((data) => {
+        return {
+          ...data,
+          [e.target.id]: e.target.value,
+        };
+      });
+    }
   };
+  console.log(formData);
 
   return (
     <section className="min-h-full bg-purple-400">
@@ -78,20 +135,38 @@ const Create = () => {
             />
           </div>
           <div className="">
-            <Select>
+            <Select
+              onValueChange={(value) =>
+                setFormData((data) => ({ ...data, category: value }))
+              }
+              defaultValue={formData.category}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Category</SelectLabel>
-                  <SelectItem value="THREAD">Thread</SelectItem>
-                  <SelectItem value="QNA">QnA</SelectItem>
+                  <SelectItem id="THREAD" value="THREAD">
+                    Thread
+                  </SelectItem>
+                  <SelectItem id="QNA" value="QNA">
+                    QnA
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
-          <Button className="text-md bg-blue-500 hover:bg-blue-400 p-5">
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          <Button
+            className={`text-md bg-blue-500 hover:bg-blue-400 p-5 ${
+              error && "shake"
+            }`}
+          >
             Post
           </Button>
         </form>
