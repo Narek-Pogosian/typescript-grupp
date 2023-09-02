@@ -47,6 +47,10 @@ const Login = () => {
 
         // ! We set a displayName at registration, usually it will work but it can fail thats why it can be null.
         setUser({ id: user.uid, userName: user.displayName! });
+        localStorage.setItem(
+          "userData",
+          JSON.stringify({ id: user.uid, userName: user.displayName })
+        );
 
         navigate("/");
       })
