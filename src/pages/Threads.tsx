@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 const Threads = () => {
   const { user, setUser } = useAuthContext();
-
   useEffect(() => {
     const user = localStorage.getItem("userData");
     if (user) {

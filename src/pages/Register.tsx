@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Register = () => {
-  const intialState = {
+  const initialState = {
     userName: "",
     email: "",
     password: "",
@@ -20,7 +20,7 @@ const Register = () => {
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState(intialState);
+  const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();

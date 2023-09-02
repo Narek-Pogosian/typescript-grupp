@@ -9,14 +9,14 @@ import React, { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const intialState = {
+  const initialState = {
     userName: "",
     email: "",
     password: "",
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState(intialState);
+  const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
