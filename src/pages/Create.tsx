@@ -35,11 +35,11 @@ const Create = () => {
   const [formData, setFormData] = useState(initialState);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const handleNewPost = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,7 +106,7 @@ const Create = () => {
   console.log(formData);
 
   return (
-    <section className="min-h-full bg-purple-400">
+    <section className="min-h-[calc(100vh-4rem)] bg-purple-400">
       <div className="w-[35rem] mx-auto flex flex-col gap-5">
         <form
           className="flex flex-col gap-5 bg-white p-10 rounded mt-24"
