@@ -5,28 +5,54 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Thread } from "@/types";
+import { QNAThread, Thread } from "@/types";
 import { FaUser } from "react-icons/fa";
+import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
+import { isQNAThread } from "@/lib/utils";
 
-const ThreadCard = ({ thread }: { thread: Thread }) => {
+type ThreadCardProps = {
+  thread: Thread | QNAThread;
+  showLink?: boolean;
+};
+
+const ThreadCard = ({ thread, showLink = true }: ThreadCardProps) => {
   return (
     <Card
-      className={`max-w-[40rem] border-b-4 ${
-        thread.category === "QNA" ? "border-b-blue-500" : "border-b-red-500"
+      className={`border-b-4 ${
+        isQNAThread(thread) ? "border-b-blue-500" : "border-b-red-500"
       }`}
     >
-      <CardHeader className="">
+      <CardHeader>
         <div className="flex justify-between">
           <span className="flex items-center gap-1 text-sm">
             <FaUser size={12} />
             {thread.creator.userName}
           </span>
-          <span className="text-sm">Created at {thread.creationDate}</span>
+          <span className="text-sm text-neutral-600">
+            Created at {thread.creationDate}
+          </span>
         </div>
         <CardTitle>{thread.title}</CardTitle>
-        <CardDescription>{thread.category}</CardDescription>
+        <CardDescription className="flex items-center gap-4">
+          <span>{thread.category}</span>
+          {isQNAThread(thread) && thread.isAnswered && (
+            <span className="px-3 py-1 text-sm font-semibold text-white rounded bg-primary">
+              Answered
+            </span>
+          )}
+        </CardDescription>
       </CardHeader>
-      <CardContent>{thread.description}</CardContent>
+      <CardContent className="flex flex-col gap-4">
+        <p>{thread.description}</p>
+        {showLink && (
+          <Button asChild>
+            <Link to={`/${thread.id}`} className="self-end">
+              See More
+            </Link>
+          </Button>
+        )}
+      </CardContent>
     </Card>
   );
 };

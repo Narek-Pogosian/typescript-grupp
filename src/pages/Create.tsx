@@ -130,6 +130,7 @@ const Create = () => {
           />
         </div>
         <Select
+          name="category"
           onValueChange={(value: ThreadCategory) =>
             setFormData((data) => ({ ...data, category: value }))
           }

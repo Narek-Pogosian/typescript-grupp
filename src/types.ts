@@ -22,7 +22,7 @@ export interface QNAThread extends Thread {
 
 export interface Comment {
   id: string;
-  thread: number;
+  threadId: string;
   content: string;
   creator: User;
 }
