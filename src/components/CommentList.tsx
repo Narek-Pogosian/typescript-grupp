@@ -1,28 +1,21 @@
 import { db } from "@/firebase";
 import { Comment } from "@/types";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "./ui/card";
 import { FaUser } from "react-icons/fa";
 
-type Props = {
+type CommentListProps = {
   threadId: string;
 };
 
-const CommentList = ({ threadId }: Props) => {
+const CommentList = ({ threadId }: CommentListProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     const q = query(
       collection(db, "comments"),
       where("threadId", "==", threadId)
-      // orderBy("")
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {

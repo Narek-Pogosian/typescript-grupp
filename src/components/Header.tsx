@@ -4,13 +4,12 @@ import { signOut } from "firebase/auth";
 import { NavLink } from "react-router-dom";
 
 const Header = () => {
-  const { user, setUser } = useAuthContext();
+  const { user, logout } = useAuthContext();
 
   const signOutUser = () => {
     signOut(auth)
       .then(() => {
-        localStorage.removeItem("userData");
-        setUser(null);
+        logout();
       })
       .catch((error) => {
         console.log(error.message);

@@ -20,7 +20,7 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  const { setUser } = useAuthContext();
+  const { signin } = useAuthContext();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((data) => {
@@ -46,11 +46,7 @@ const Login = () => {
         const user = userCredential.user;
 
         // * We set a displayName at registration, usually it will work but it can fail thats why it can be null.
-        setUser({ id: user.uid, userName: user.displayName! });
-        localStorage.setItem(
-          "userData",
-          JSON.stringify({ id: user.uid, userName: user.displayName })
-        );
+        signin({ id: user.uid, userName: user.displayName! });
 
         navigate("/");
       })

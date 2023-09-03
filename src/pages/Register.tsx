@@ -53,6 +53,7 @@ const Register = () => {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
+
           updateProfile(user, { displayName: userName }).then(() => {
             navigate("/login");
           });
