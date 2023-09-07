@@ -4,12 +4,15 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "./ui/card";
 import { FaUser } from "react-icons/fa";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import DeleteCommentButton from "./DeleteCommentButton";
 
 type CommentListProps = {
   threadId: string;
 };
 
 const CommentList = ({ threadId }: CommentListProps) => {
+  const { user } = useAuthContext();
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
@@ -35,11 +38,17 @@ const CommentList = ({ threadId }: CommentListProps) => {
       {comments.map((comment) => (
         <Card key={comment.id}>
           <CardHeader>
-            <div className="flex items-center gap-2">
-              <FaUser size={12} />
-              <span className="text-sm font-semibold">
-                {comment.creator.userName}
-              </span>
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <FaUser size={12} />
+                <span className="text-sm font-semibold">
+                  {comment.creator.userName}
+                </span>
+              </div>
+              {/* Only show delete button to the user that created it*/}
+              {user?.id === comment.creator.id && (
+                <DeleteCommentButton comment={comment} />
+              )}
             </div>
           </CardHeader>
           <CardContent>
