@@ -32,7 +32,7 @@ const CommentList = ({ threadId }: CommentListProps) => {
   return (
     <div className="space-y-4">
       {comments.map((comment) => (
-        <CommentCard comment={comment} />
+        <CommentCard comment={comment} key={comment.id} />
       ))}
     </div>
   );

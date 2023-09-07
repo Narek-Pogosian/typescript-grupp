@@ -19,7 +19,19 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const localUser = localStorage.getItem("threads-user");
 
-    if (typeof localUser === "string") return JSON.parse(localUser);
+    if (!localUser) return null;
+
+    // Here we know localUser has to be string
+    const parsedUser = JSON.parse(localUser);
+    // Check if parsedUser is not null and it has the 2 properties we want
+    if (
+      parsedUser &&
+      typeof parsedUser.id === "string" &&
+      typeof parsedUser.userName === "string"
+      //
+    ) {
+      return parsedUser as User;
+    }
 
     return null;
   });

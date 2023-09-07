@@ -46,7 +46,7 @@ const Details = () => {
     <>
       {thread ? (
         <div className="space-y-6">
-          <ThreadCard thread={thread} showLink={false} />
+          <ThreadCard thread={thread} showLink={false} showDelete />
           <CommentList threadId={thread.id} />
           <CommentForm threadId={threadId} />
         </div>

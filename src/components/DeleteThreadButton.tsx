@@ -2,25 +2,30 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { Button } from "./ui/button";
 import { db } from "@/firebase";
 import { useState } from "react";
-import { Comment, User } from "@/types";
+import { Thread, User } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 type DeleteCommentButtonProps = {
-  comment: Comment;
+  thread: Thread;
   user: User;
 };
 
-const DeleteCommentButton = ({ comment, user }: DeleteCommentButtonProps) => {
+// With showdelete prop on ThreadCard, show only the button in the details page
+const DeleteThreadButton = ({ thread, user }: DeleteCommentButtonProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
 
   const deleteComment = () => {
     // Make sure the creator user can only delete
-    if (!user || user.id !== comment.creator.id) return;
+    if (!user || user.id !== thread.creator.id) return;
 
     setIsDeleting(true);
 
-    deleteDoc(doc(db, "comments", comment.id)).finally(() =>
-      setIsDeleting(false)
-    );
+    deleteDoc(doc(db, "threads", thread.id))
+      .then(() => {
+        navigate("/");
+      })
+      .finally(() => setIsDeleting(false));
   };
 
   return (
@@ -35,4 +40,4 @@ const DeleteCommentButton = ({ comment, user }: DeleteCommentButtonProps) => {
   );
 };
 
-export default DeleteCommentButton;
+export default DeleteThreadButton;
