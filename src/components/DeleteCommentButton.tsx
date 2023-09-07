@@ -2,16 +2,15 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { Button } from "./ui/button";
 import { db } from "@/firebase";
 import { useState } from "react";
-import { useAuthContext } from "@/hooks/useAuthContext";
-import { Comment } from "@/types";
+import { Comment, User } from "@/types";
 
 type DeleteCommentButtonProps = {
   comment: Comment;
+  user: User;
 };
 
-const DeleteCommentButton = ({ comment }: DeleteCommentButtonProps) => {
+const DeleteCommentButton = ({ comment, user }: DeleteCommentButtonProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { user } = useAuthContext();
 
   const deleteComment = () => {
     // Make sure the creator user can only delete

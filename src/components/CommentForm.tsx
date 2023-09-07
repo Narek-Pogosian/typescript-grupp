@@ -8,11 +8,11 @@ import { Comment } from "@/types";
 import { useState } from "react";
 import BtnLoader from "@/utils/Loader/BtnLoader";
 
-type ComentFormProps = {
+type CommentFormProps = {
   threadId: string;
 };
 
-const CommentForm = ({ threadId }: ComentFormProps) => {
+const CommentForm = ({ threadId }: CommentFormProps) => {
   const { user } = useAuthContext();
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -24,8 +24,8 @@ const CommentForm = ({ threadId }: ComentFormProps) => {
     if (!user) return;
     if (!contentRef.current) return;
 
-    const content = contentRef.current?.value;
-    if (!content?.trim()) return;
+    const content = contentRef.current.value;
+    if (!content.trim()) return;
 
     try {
       setIsLoading(true);
